@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
         calories: body.calories,
         route: body.map?.summary_polyline
           ? { summary_polyline: body.map.summary_polyline }
-          : null,
+          : undefined,
       },
     })
 

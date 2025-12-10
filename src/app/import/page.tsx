@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -41,7 +41,7 @@ interface StravaActivity {
   isImported: boolean
 }
 
-export default function ImportPage() {
+function ImportContent() {
   const searchParams = useSearchParams()
   const userId = searchParams.get('userId')
 
@@ -275,7 +275,7 @@ export default function ImportPage() {
             variant="outlined"
             color="primary"
           >
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Button>
         </Box>
 
@@ -449,5 +449,27 @@ export default function ImportPage() {
         </Stack>
       </Container>
     </Box>
+  )
+}
+
+export default function ImportPage() {
+  return (
+    <Suspense fallback={
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
+        <CircularProgress size={60} />
+        <Typography variant="h6">Chargement...</Typography>
+      </Box>
+    }>
+      <ImportContent />
+    </Suspense>
   )
 }

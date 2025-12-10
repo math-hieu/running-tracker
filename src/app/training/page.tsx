@@ -259,7 +259,7 @@ export default function TrainingPage() {
           }}>
             <Box>
               <Typography variant="h2" gutterBottom sx={{ fontSize: { xs: '2rem', sm: '3rem' } }}>
-                Programme d'entraînement
+                Programme d&apos;entraînement
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 {program.meta.race}
@@ -304,7 +304,7 @@ export default function TrainingPage() {
               </Grid>
               <Grid item xs={12} md={6}>
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="caption" color="text.secondary">Focus d'intensité</Typography>
+                  <Typography variant="caption" color="text.secondary">Focus d&apos;intensité</Typography>
                   <Typography variant="body2">{program.meta.intensity_focus}</Typography>
                 </Box>
                 <Box>
@@ -315,7 +315,7 @@ export default function TrainingPage() {
             </Grid>
 
             <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Zones d'effort</Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>Zones d&apos;effort</Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                   <Box sx={{ p: 2, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: 1 }}>

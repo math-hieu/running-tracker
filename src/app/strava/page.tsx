@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import {
   Box,
   Button,
@@ -9,12 +10,13 @@ import {
   Typography,
   Alert,
   Stack,
+  CircularProgress,
 } from '@mui/material'
 import { CheckCircle } from '@mui/icons-material'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function StravaPage() {
+function StravaContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
 
@@ -100,7 +102,7 @@ export default function StravaPage() {
                 size="large"
                 fullWidth
               >
-                Retour à l'accueil
+                Retour à l&apos;accueil
               </Button>
             </Stack>
 
@@ -116,5 +118,27 @@ export default function StravaPage() {
         </Card>
       </Container>
     </Box>
+  )
+}
+
+export default function StravaPage() {
+  return (
+    <Suspense fallback={
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
+        <CircularProgress size={60} />
+        <Typography variant="h6">Chargement...</Typography>
+      </Box>
+    }>
+      <StravaContent />
+    </Suspense>
   )
 }
