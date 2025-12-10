@@ -1,0 +1,198 @@
+{
+  "meta": {
+    "race": "EcoTrail de Paris (≈47.5 km, +800 m)",
+    "race_date": "2026-03-21",
+    "plan_start_date": "2025-12-15",
+    "weeks": 14,
+    "sessions_per_week": "3-4",
+    "starting_volume_km_per_week": "25-35",
+    "starting_long_run": "1h30",
+    "intensity_focus": "majorité footing EF, rappels d'allure très légers, côtes douces sans fractionné dur",
+    "effort_zones": {
+      "EF": "endurance facile, conversation aisée",
+      "AC": "allure course visée, soutenu mais contrôlé",
+      "COTES_DOUCES": "montées régulières effort modéré, pas de sprint"
+    },
+    "strength_reco": "2x/sem 20-25 min gainage + fessiers/ischios/mollets",
+    "guidelines": [
+      "Si fatigue inhabituelle >48h: réduire volume de 20-30% et garder uniquement EF",
+      "Sortie longue: rester facile, l’objectif est le temps passé dehors",
+      "Augmentation volume max ~10-15% sur les semaines build"
+    ]
+  },
+  "weeks": [
+    {
+      "week": 1,
+      "start_date": "2025-12-15",
+      "end_date": "2025-12-21",
+      "target_km_range": "28-32",
+      "target_dplus_range_m": "150-250",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 45, "notes": "Souple" },
+        { "day": "Thu", "type": "Footing EF + éducatifs", "duration_min": 50, "notes": "Finir par 6×15-20s accélérations souples" },
+        { "day": "Sat", "type": "Sortie longue EF vallonné", "duration_min": 105, "expected_dplus_m": 150, "notes": "1h45 tranquille" }
+      ]
+    },
+    {
+      "week": 2,
+      "start_date": "2025-12-22",
+      "end_date": "2025-12-28",
+      "target_km_range": "30-35",
+      "target_dplus_range_m": "180-280",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 50 },
+        { "day": "Thu", "type": "Footing tempo léger", "duration_min": 55, "notes": "2×6 min AC, récup 4 min" },
+        { "day": "Sat", "type": "Sortie longue EF", "duration_min": 120, "expected_dplus_m": 180, "notes": "2h facile" }
+      ]
+    },
+    {
+      "week": 3,
+      "start_date": "2025-12-29",
+      "end_date": "2026-01-04",
+      "target_km_range": "33-38",
+      "target_dplus_range_m": "200-320",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 50, "notes": "+ éducatifs légers" },
+        { "day": "Thu", "type": "Footing vallonné EF + côtes douces", "duration_min": 60, "notes": "5×2 min montée modérée, récup descente" },
+        { "day": "Sat", "type": "Sortie longue EF trail", "duration_min": 130, "expected_dplus_m": 220, "notes": "2h10 facile" },
+        { "day": "Sun", "type": "Footing récup EF (optionnel)", "duration_min": 35, "notes": "Uniquement si tu te sens bien" }
+      ]
+    },
+    {
+      "week": 4,
+      "start_date": "2026-01-05",
+      "end_date": "2026-01-11",
+      "target_km_range": "26-30",
+      "target_dplus_range_m": "150-220",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 45 },
+        { "day": "Thu", "type": "Footing EF", "duration_min": 50, "notes": "Très souple" },
+        { "day": "Sat", "type": "Sortie longue EF", "duration_min": 105, "expected_dplus_m": 150, "notes": "1h45 facile" }
+      ]
+    },
+    {
+      "week": 5,
+      "start_date": "2026-01-12",
+      "end_date": "2026-01-18",
+      "target_km_range": "36-42",
+      "target_dplus_range_m": "250-380",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 55 },
+        { "day": "Thu", "type": "Footing tempo léger", "duration_min": 65, "notes": "12-15 min AC continue au milieu" },
+        { "day": "Sat", "type": "Sortie longue EF trail", "duration_min": 150, "expected_dplus_m": 300, "notes": "2h30 facile, tester nutrition" },
+        { "day": "Sun", "type": "Footing récup EF (optionnel)", "duration_min": 40 }
+      ]
+    },
+    {
+      "week": 6,
+      "start_date": "2026-01-19",
+      "end_date": "2026-01-25",
+      "target_km_range": "40-46",
+      "target_dplus_range_m": "300-450",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 55, "notes": "Souple" },
+        { "day": "Thu", "type": "Footing vallonné EF + côtes douces", "duration_min": 70, "notes": "6×2 min montée modérée, récup descente" },
+        { "day": "Sat", "type": "Sortie longue EF trail", "duration_min": 165, "expected_dplus_m": 350, "notes": "2h45 facile" }
+      ]
+    },
+    {
+      "week": 7,
+      "start_date": "2026-01-26",
+      "end_date": "2026-02-01",
+      "target_km_range": "43-50",
+      "target_dplus_range_m": "350-520",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 60, "notes": "Finir par 6×20s accélérations" },
+        { "day": "Thu", "type": "Footing tempo léger", "duration_min": 70, "notes": "20 min AC continue" },
+        { "day": "Sat", "type": "Sortie longue trail EF", "duration_min": 180, "expected_dplus_m": 400, "notes": "3h facile" },
+        { "day": "Sun", "type": "Footing récup EF (optionnel)", "duration_min": 45 }
+      ]
+    },
+    {
+      "week": 8,
+      "start_date": "2026-02-02",
+      "end_date": "2026-02-08",
+      "target_km_range": "32-38",
+      "target_dplus_range_m": "220-350",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 50 },
+        { "day": "Thu", "type": "Footing EF vallonné", "duration_min": 55, "notes": "Souple" },
+        { "day": "Sat", "type": "Sortie longue EF", "duration_min": 150, "expected_dplus_m": 300, "notes": "2h30 facile" }
+      ]
+    },
+    {
+      "week": 9,
+      "start_date": "2026-02-09",
+      "end_date": "2026-02-15",
+      "target_km_range": "48-55",
+      "target_dplus_range_m": "420-600",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 60 },
+        { "day": "Thu", "type": "Footing tempo léger vallonné", "duration_min": 75, "notes": "2×10 min AC, récup 5 min" },
+        { "day": "Sat", "type": "Sortie longue trail EF", "duration_min": 210, "expected_dplus_m": 500, "notes": "3h30 facile, nutrition régulière" },
+        { "day": "Sun", "type": "Footing récup EF (optionnel)", "duration_min": 45 }
+      ]
+    },
+    {
+      "week": 10,
+      "start_date": "2026-02-16",
+      "end_date": "2026-02-22",
+      "target_km_range": "52-60",
+      "target_dplus_range_m": "500-700",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 65 },
+        { "day": "Thu", "type": "Footing vallonné EF + côtes douces", "duration_min": 80, "notes": "4×4 min montée modérée, récup descente" },
+        { "day": "Sat", "type": "Sortie longue trail EF", "duration_min": 240, "expected_dplus_m": 600, "notes": "4h facile" }
+      ]
+    },
+    {
+      "week": 11,
+      "start_date": "2026-02-23",
+      "end_date": "2026-03-01",
+      "target_km_range": "55-65",
+      "target_dplus_range_m": "550-800",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 65, "notes": "+ éducatifs" },
+        { "day": "Thu", "type": "Footing tempo léger", "duration_min": 85, "notes": "25-30 min AC continue" },
+        { "day": "Sat", "type": "Grosse sortie longue trail EF", "duration_min": 255, "expected_dplus_m": 700, "notes": "4h15 facile, finir solide sans puiser" },
+        { "day": "Sun", "type": "Footing EF enchaîné (optionnel)", "duration_min": 75, "notes": "Très facile si tu récupères bien" }
+      ]
+    },
+    {
+      "week": 12,
+      "start_date": "2026-03-02",
+      "end_date": "2026-03-08",
+      "target_km_range": "45-52",
+      "target_dplus_range_m": "400-600",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 55 },
+        { "day": "Thu", "type": "Footing tempo léger", "duration_min": 70, "notes": "20 min AC continue" },
+        { "day": "Sat", "type": "Sortie longue trail EF", "duration_min": 210, "expected_dplus_m": 500, "notes": "3h30 facile, 15-20 min AC au milieu" }
+      ]
+    },
+    {
+      "week": 13,
+      "start_date": "2026-03-09",
+      "end_date": "2026-03-15",
+      "target_km_range": "32-38",
+      "target_dplus_range_m": "220-350",
+      "sessions": [
+        { "day": "Tue", "type": "Footing EF", "duration_min": 50, "notes": "+ 5×20s accélérations souples" },
+        { "day": "Thu", "type": "Footing EF vallonné", "duration_min": 55, "notes": "Souple" },
+        { "day": "Sat", "type": "Sortie longue EF", "duration_min": 150, "expected_dplus_m": 250, "notes": "2h30 facile" }
+      ]
+    },
+    {
+      "week": 14,
+      "start_date": "2026-03-16",
+      "end_date": "2026-03-22",
+      "target_km_range": "18-24",
+      "target_dplus_range_m": "80-150",
+      "sessions": [
+        { "day": "Mon", "type": "Footing EF", "duration_min": 40, "notes": "Très facile" },
+        { "day": "Wed", "type": "Footing EF + rappel allure", "duration_min": 30, "notes": "4×1 min AC, récup 2 min (ultra facile)" },
+        { "day": "Sat", "type": "COURSE", "duration_min": 0, "expected_dplus_m": 800, "notes": "EcoTrail de Paris 47.5 km +800 m" }
+      ]
+    }
+  ]
+}

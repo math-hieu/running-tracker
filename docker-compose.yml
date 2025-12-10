@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: running-tracker-db
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=runninguser
+      - POSTGRES_PASSWORD=runningpass
+      - POSTGRES_DB=running_tracker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - running-tracker-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U runninguser -d running_tracker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    container_name: running-tracker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://runninguser:runningpass@postgres:5432/running_tracker
+    restart: unless-stopped
+    networks:
+      - running-tracker-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+
+networks:
+  running-tracker-network:
+    driver: bridge
