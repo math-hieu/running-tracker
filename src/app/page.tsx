@@ -324,56 +324,64 @@ export default function HomePage() {
       <Container maxWidth="lg">
         {/* Navigation */}
         <Box sx={{ mb: 4 }}>
-          <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
-            <Chip
-              icon={<Home />}
-              label="Accueil"
-              component={Link}
-              href="/"
-              clickable
-              color={pathname === '/' ? 'primary' : 'default'}
-              sx={{
-                fontWeight: pathname === '/' ? 600 : 400,
-                fontSize: '0.95rem',
-              }}
-            />
-            <Chip
-              icon={<DirectionsRunIcon />}
-              label="Activités"
-              component={Link}
-              href="/activities"
-              clickable
-              color={pathname === '/activities' ? 'primary' : 'default'}
-              sx={{
-                fontWeight: pathname === '/activities' ? 600 : 400,
-                fontSize: '0.95rem',
-              }}
-            />
-            <Chip
-              icon={<FitnessCenter />}
-              label="Programme"
-              component={Link}
-              href="/training"
-              clickable
-              color={pathname === '/training' ? 'primary' : 'default'}
-              sx={{
-                fontWeight: pathname === '/training' ? 600 : 400,
-                fontSize: '0.95rem',
-              }}
-            />
-            <Chip
-              icon={<CloudUpload />}
-              label="Importer"
-              component={Link}
-              href="/strava"
-              clickable
-              color={pathname === '/strava' ? 'primary' : 'default'}
-              sx={{
-                fontWeight: pathname === '/strava' ? 600 : 400,
-                fontSize: '0.95rem',
-              }}
-            />
-          </Stack>
+          <Box sx={{
+            overflowX: 'auto',
+            mb: 3,
+            '&::-webkit-scrollbar': { display: 'none' },
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+          }}>
+            <Stack direction="row" spacing={1} sx={{ minWidth: 'fit-content', pb: 1 }}>
+              <Chip
+                icon={<Home />}
+                label="Accueil"
+                component={Link}
+                href="/"
+                clickable
+                color={pathname === '/' ? 'primary' : 'default'}
+                sx={{
+                  fontWeight: pathname === '/' ? 600 : 400,
+                  fontSize: '0.95rem',
+                }}
+              />
+              <Chip
+                icon={<DirectionsRunIcon />}
+                label="Activités"
+                component={Link}
+                href="/activities"
+                clickable
+                color={pathname === '/activities' ? 'primary' : 'default'}
+                sx={{
+                  fontWeight: pathname === '/activities' ? 600 : 400,
+                  fontSize: '0.95rem',
+                }}
+              />
+              <Chip
+                icon={<FitnessCenter />}
+                label="Programme"
+                component={Link}
+                href="/training"
+                clickable
+                color={pathname === '/training' ? 'primary' : 'default'}
+                sx={{
+                  fontWeight: pathname === '/training' ? 600 : 400,
+                  fontSize: '0.95rem',
+                }}
+              />
+              <Chip
+                icon={<CloudUpload />}
+                label="Importer"
+                component={Link}
+                href="/strava"
+                clickable
+                color={pathname === '/strava' ? 'primary' : 'default'}
+                sx={{
+                  fontWeight: pathname === '/strava' ? 600 : 400,
+                  fontSize: '0.95rem',
+                }}
+              />
+            </Stack>
+          </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box>

@@ -190,67 +190,82 @@ export default function TrainingPage() {
       <Container maxWidth="lg">
         {/* Navigation */}
         <Box sx={{ mb: 4 }}>
-          <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
-            <Chip
-              icon={<Home />}
-              label="Accueil"
-              component={Link}
-              href="/"
-              clickable
-              color={pathname === '/' ? 'primary' : 'default'}
-              sx={{
-                fontWeight: pathname === '/' ? 600 : 400,
-                fontSize: '0.95rem',
-              }}
-            />
-            <Chip
-              icon={<DirectionsRunIcon />}
-              label="Activités"
-              component={Link}
-              href="/activities"
-              clickable
-              color={pathname === '/activities' ? 'primary' : 'default'}
-              sx={{
-                fontWeight: pathname === '/activities' ? 600 : 400,
-                fontSize: '0.95rem',
-              }}
-            />
-            <Chip
-              icon={<FitnessCenter />}
-              label="Programme"
-              component={Link}
-              href="/training"
-              clickable
-              color={pathname === '/training' ? 'primary' : 'default'}
-              sx={{
-                fontWeight: pathname === '/training' ? 600 : 400,
-                fontSize: '0.95rem',
-              }}
-            />
-            <Chip
-              icon={<CloudUpload />}
-              label="Importer"
-              component={Link}
-              href="/strava"
-              clickable
-              color={pathname === '/strava' ? 'primary' : 'default'}
-              sx={{
-                fontWeight: pathname === '/strava' ? 600 : 400,
-                fontSize: '0.95rem',
-              }}
-            />
-          </Stack>
+          <Box sx={{
+            overflowX: 'auto',
+            mb: 3,
+            '&::-webkit-scrollbar': { display: 'none' },
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+          }}>
+            <Stack direction="row" spacing={1} sx={{ minWidth: 'fit-content', pb: 1 }}>
+              <Chip
+                icon={<Home />}
+                label="Accueil"
+                component={Link}
+                href="/"
+                clickable
+                color={pathname === '/' ? 'primary' : 'default'}
+                sx={{
+                  fontWeight: pathname === '/' ? 600 : 400,
+                  fontSize: '0.95rem',
+                }}
+              />
+              <Chip
+                icon={<DirectionsRunIcon />}
+                label="Activités"
+                component={Link}
+                href="/activities"
+                clickable
+                color={pathname === '/activities' ? 'primary' : 'default'}
+                sx={{
+                  fontWeight: pathname === '/activities' ? 600 : 400,
+                  fontSize: '0.95rem',
+                }}
+              />
+              <Chip
+                icon={<FitnessCenter />}
+                label="Programme"
+                component={Link}
+                href="/training"
+                clickable
+                color={pathname === '/training' ? 'primary' : 'default'}
+                sx={{
+                  fontWeight: pathname === '/training' ? 600 : 400,
+                  fontSize: '0.95rem',
+                }}
+              />
+              <Chip
+                icon={<CloudUpload />}
+                label="Importer"
+                component={Link}
+                href="/strava"
+                clickable
+                color={pathname === '/strava' ? 'primary' : 'default'}
+                sx={{
+                  fontWeight: pathname === '/strava' ? 600 : 400,
+                  fontSize: '0.95rem',
+                }}
+              />
+            </Stack>
+          </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: 2,
+            mb: 3
+          }}>
             <Box>
-              <Typography variant="h2" gutterBottom>
+              <Typography variant="h2" gutterBottom sx={{ fontSize: { xs: '2rem', sm: '3rem' } }}>
                 Programme d'entraînement
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 {program.meta.race}
               </Typography>
             </Box>
-            <Box sx={{ textAlign: 'right' }}>
+            <Box sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
               <Chip
                 icon={<EmojiEvents />}
                 label={new Date(program.meta.race_date).toLocaleDateString('fr-FR', {
@@ -259,7 +274,7 @@ export default function TrainingPage() {
                   year: 'numeric'
                 })}
                 color="warning"
-                sx={{ fontSize: '1rem', px: 2, py: 3 }}
+                sx={{ fontSize: { xs: '0.875rem', sm: '1rem' }, px: { xs: 1.5, sm: 2 }, py: { xs: 2, sm: 3 } }}
               />
             </Box>
           </Box>
@@ -454,29 +469,30 @@ export default function TrainingPage() {
 
         {/* Training Volume Chart */}
         <Card sx={{ mt: 4, background: 'linear-gradient(135deg, #1e1e2d 0%, #1e1e1e 100%)' }}>
-          <CardContent sx={{ p: 3 }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-              <ShowChart sx={{ fontSize: 32, color: 'secondary.main' }} />
-              <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                Visualisation du programme d'entraînement
+              <ShowChart sx={{ fontSize: { xs: 24, sm: 32 }, color: 'secondary.main' }} />
+              <Typography variant="h4" sx={{ fontWeight: 600, fontSize: { xs: '1.25rem', sm: '2rem' } }}>
+                Visualisation du programme
               </Typography>
             </Box>
 
-            <Box sx={{ width: '100%', height: 400 }}>
+            <Box sx={{ width: '100%', height: { xs: 300, sm: 400 } }}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={weeklyChartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                   <XAxis
                     dataKey="week"
                     stroke="#999"
-                    style={{ fontSize: '0.875rem' }}
-                    label={{ value: 'Semaines', position: 'insideBottom', offset: -5, fill: '#999' }}
+                    style={{ fontSize: '0.75rem' }}
+                    tick={{ fontSize: 12 }}
                   />
                   <YAxis
                     stroke="#999"
-                    style={{ fontSize: '0.875rem' }}
-                    label={{ value: 'Temps de course', angle: -90, position: 'insideLeft', fill: '#999' }}
+                    style={{ fontSize: '0.75rem' }}
+                    tick={{ fontSize: 12 }}
                     tickFormatter={formatYAxisTime}
+                    width={60}
                   />
                   <Tooltip
                     contentStyle={{
