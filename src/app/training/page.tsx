@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import {
   Box,
   Card,
@@ -34,6 +35,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from 'recharts'
 import programData from '../../../training-program/ecotrail.json'
@@ -76,9 +78,35 @@ interface TrainingProgram {
   weeks: Week[]
 }
 
+interface Activity {
+  id: string
+  title: string
+  distance: number
+  duration: number
+  pace: number
+  date: string
+  elevation?: number
+}
+
 export default function TrainingPage() {
   const program = programData as TrainingProgram
   const pathname = usePathname()
+  const [activities, setActivities] = useState<Activity[]>([])
+
+  useEffect(() => {
+    fetchActivities()
+  }, [])
+
+  const fetchActivities = async () => {
+    try {
+      const response = await fetch('/api/activities')
+      if (!response.ok) throw new Error('Failed to fetch activities')
+      const data = await response.json()
+      setActivities(data)
+    } catch (err) {
+      console.error('Error fetching activities:', err)
+    }
+  }
 
   const formatDuration = (minutes: number) => {
     const hours = Math.floor(minutes / 60)
@@ -116,27 +144,36 @@ export default function TrainingPage() {
 
   const getWeeklyChartData = () => {
     return program.weeks.map((week) => {
+      // Calculate planned time
       const totalMinutes = week.sessions.reduce((sum, session) => sum + session.duration_min, 0)
-      const hours = totalMinutes / 60
+
+      // Calculate actual time from activities
+      const weekStart = new Date(week.start_date)
+      const weekEnd = new Date(week.end_date)
+      weekEnd.setHours(23, 59, 59, 999) // Include the entire end date
+
+      const weekActivities = activities.filter((activity) => {
+        const activityDate = new Date(activity.date)
+        return activityDate >= weekStart && activityDate <= weekEnd
+      })
+
+      const actualSeconds = weekActivities.reduce((sum, activity) => sum + activity.duration, 0)
+      const actualMinutes = actualSeconds / 60
 
       return {
         week: `S${week.week}`,
-        totalMinutes,
-        hours: parseFloat(hours.toFixed(2)),
-        formattedTime: formatDuration(totalMinutes),
+        plannedMinutes: totalMinutes,
+        actualMinutes: actualMinutes,
+        formattedPlanned: formatDuration(totalMinutes),
+        formattedActual: formatDuration(actualMinutes),
       }
     })
   }
 
   const formatYAxisTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60)
-    const mins = minutes % 60
-    if (hours > 0 && mins > 0) {
-      return `${hours}h${mins}`
-    } else if (hours > 0) {
-      return `${hours}h`
-    }
-    return `${mins}min`
+    const mins = Math.round(minutes % 60)
+    return `${hours}h ${mins.toString().padStart(2, '0')}min`
   }
 
   const weeklyChartData = getWeeklyChartData()
@@ -436,7 +473,6 @@ export default function TrainingPage() {
                     label={{ value: 'Semaines', position: 'insideBottom', offset: -5, fill: '#999' }}
                   />
                   <YAxis
-                    dataKey="totalMinutes"
                     stroke="#999"
                     style={{ fontSize: '0.875rem' }}
                     label={{ value: 'Temps de course', angle: -90, position: 'insideLeft', fill: '#999' }}
@@ -450,50 +486,82 @@ export default function TrainingPage() {
                     }}
                     labelStyle={{ color: '#fff' }}
                     formatter={(value: number, name: string) => {
-                      if (name === 'totalMinutes') {
-                        return [formatYAxisTime(value), 'Temps total']
+                      if (name === 'plannedMinutes') {
+                        return [formatYAxisTime(value), 'Temps prévu']
+                      }
+                      if (name === 'actualMinutes') {
+                        return [formatYAxisTime(value), 'Temps réalisé']
                       }
                       return [value, name]
                     }}
                   />
+                  <Legend
+                    wrapperStyle={{ color: '#fff' }}
+                    formatter={(value: string) => {
+                      if (value === 'plannedMinutes') return 'Temps prévu'
+                      if (value === 'actualMinutes') return 'Temps réalisé'
+                      return value
+                    }}
+                  />
                   <Line
                     type="monotone"
-                    dataKey="totalMinutes"
+                    dataKey="plannedMinutes"
+                    name="plannedMinutes"
                     stroke="#ce93d8"
                     strokeWidth={3}
                     dot={{ fill: '#ce93d8', r: 5 }}
+                    activeDot={{ r: 7 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="actualMinutes"
+                    name="actualMinutes"
+                    stroke="#4caf50"
+                    strokeWidth={3}
+                    dot={{ fill: '#4caf50', r: 5 }}
                     activeDot={{ r: 7 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
             </Box>
 
-            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 3 }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="caption" color="text.secondary">
-                  Volume minimum
-                </Typography>
-                <Typography variant="h6" color="secondary.main">
-                  {formatYAxisTime(Math.min(...weeklyChartData.map(d => d.totalMinutes)))}
-                </Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="caption" color="text.secondary">
-                  Volume maximum
-                </Typography>
-                <Typography variant="h6" color="secondary.main">
-                  {formatYAxisTime(Math.max(...weeklyChartData.map(d => d.totalMinutes)))}
-                </Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="caption" color="text.secondary">
-                  Volume moyen
-                </Typography>
-                <Typography variant="h6" color="secondary.main">
-                  {formatYAxisTime(Math.round(weeklyChartData.reduce((sum, d) => sum + d.totalMinutes, 0) / weeklyChartData.length))}
-                </Typography>
-              </Box>
-            </Box>
+            <Grid container spacing={3} sx={{ mt: 2 }}>
+              <Grid item xs={12} md={4}>
+                <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'rgba(206, 147, 216, 0.1)', borderRadius: 2 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                    Volume prévu total
+                  </Typography>
+                  <Typography variant="h5" sx={{ color: '#ce93d8', fontWeight: 600 }}>
+                    {formatYAxisTime(Math.round(weeklyChartData.reduce((sum, d) => sum + d.plannedMinutes, 0)))}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: 2 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                    Volume réalisé total
+                  </Typography>
+                  <Typography variant="h5" sx={{ color: '#4caf50', fontWeight: 600 }}>
+                    {formatYAxisTime(Math.round(weeklyChartData.reduce((sum, d) => sum + d.actualMinutes, 0)))}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'rgba(255, 255, 255, 0.05)', borderRadius: 2 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                    Taux de réalisation
+                  </Typography>
+                  <Typography variant="h5" sx={{ color: '#fff', fontWeight: 600 }}>
+                    {(() => {
+                      const totalPlanned = weeklyChartData.reduce((sum, d) => sum + d.plannedMinutes, 0)
+                      const totalActual = weeklyChartData.reduce((sum, d) => sum + d.actualMinutes, 0)
+                      const percentage = totalPlanned > 0 ? Math.round((totalActual / totalPlanned) * 100) : 0
+                      return `${percentage}%`
+                    })()}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
           </CardContent>
         </Card>
       </Container>

@@ -2,8 +2,8 @@
   "meta": {
     "race": "EcoTrail de Paris (≈47.5 km, +800 m)",
     "race_date": "2026-03-21",
-    "plan_start_date": "2025-12-15",
-    "weeks": 14,
+    "plan_start_date": "2025-12-08",
+    "weeks": 15,
     "sessions_per_week": "3-4",
     "starting_volume_km_per_week": "25-35",
     "starting_long_run": "1h30",
@@ -21,6 +21,33 @@
     ]
   },
   "weeks": [
+    {
+      "week": 0,
+      "start_date": "2025-12-08",
+      "end_date": "2025-12-14",
+      "target_km_range": "20-25",
+      "target_dplus_range_m": "0-150",
+      "sessions": [
+        {
+          "day": "Tue",
+          "type": "Footing EF",
+          "duration_min": 40,
+          "notes": "Souple, facile"
+        },
+        {
+          "day": "Thu",
+          "type": "Footing EF",
+          "duration_min": 50,
+          "notes": "Rythme conversation"
+        },
+        {
+          "day": "Sun",
+          "type": "Footing EF",
+          "duration_min": 60,
+          "notes": "1h facile"
+        }
+      ]
+    },
     {
       "week": 1,
       "start_date": "2025-12-15",
