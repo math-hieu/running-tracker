@@ -5,6 +5,7 @@ import {
   Box,
   Card,
   CardContent,
+  Checkbox,
   Chip,
   Container,
   Grid,
@@ -88,13 +89,27 @@ interface Activity {
   elevation?: number
 }
 
+interface SessionCompletion {
+  id: string
+  userId: string
+  weekNumber: number
+  dayOfWeek: string | null
+  sessionType: string
+  completedAt: string
+  createdAt: string
+  updatedAt: string
+}
+
 export default function TrainingPage() {
   const program = programData as TrainingProgram
   const pathname = usePathname()
   const [activities, setActivities] = useState<Activity[]>([])
+  const [completions, setCompletions] = useState<SessionCompletion[]>([])
+  const [togglingSession, setTogglingSession] = useState<string | null>(null)
 
   useEffect(() => {
     fetchActivities()
+    fetchCompletions()
   }, [])
 
   const fetchActivities = async () => {
@@ -105,6 +120,85 @@ export default function TrainingPage() {
       setActivities(data)
     } catch (err) {
       console.error('Error fetching activities:', err)
+    }
+  }
+
+  const fetchCompletions = async () => {
+    try {
+      const response = await fetch('/api/session-completions?userId=default-user')
+      if (!response.ok) throw new Error('Failed to fetch completions')
+      const data = await response.json()
+      setCompletions(data)
+    } catch (err) {
+      console.error('Error fetching completions:', err)
+    }
+  }
+
+  const isSessionCompleted = (weekNumber: number, dayOfWeek: string | undefined, sessionType: string): boolean => {
+    return completions.some(
+      c => c.weekNumber === weekNumber &&
+           c.dayOfWeek === (dayOfWeek || null) &&
+           c.sessionType === sessionType
+    )
+  }
+
+  const getSessionKey = (weekNumber: number, dayOfWeek: string | undefined, sessionType: string): string => {
+    return `${weekNumber}-${dayOfWeek || 'noday'}-${sessionType}`
+  }
+
+  const toggleSessionCompletion = async (weekNumber: number, dayOfWeek: string | undefined, sessionType: string) => {
+    const sessionKey = getSessionKey(weekNumber, dayOfWeek, sessionType)
+    const isCompleted = isSessionCompleted(weekNumber, dayOfWeek, sessionType)
+
+    setTogglingSession(sessionKey)
+
+    // Mise à jour optimiste
+    if (isCompleted) {
+      // Retirer de la liste
+      setCompletions(prev =>
+        prev.filter(c => !(
+          c.weekNumber === weekNumber &&
+          c.dayOfWeek === (dayOfWeek || null) &&
+          c.sessionType === sessionType
+        ))
+      )
+    } else {
+      // Ajouter à la liste (optimistic - on devine l'ID)
+      const optimisticCompletion: SessionCompletion = {
+        id: 'temp-' + Date.now(),
+        userId: 'default-user',
+        weekNumber,
+        dayOfWeek: dayOfWeek || null,
+        sessionType,
+        completedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+      setCompletions(prev => [...prev, optimisticCompletion])
+    }
+
+    try {
+      const response = await fetch('/api/session-completions/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'default-user',
+          weekNumber,
+          dayOfWeek: dayOfWeek || null,
+          sessionType,
+        }),
+      })
+
+      if (!response.ok) throw new Error('Failed to toggle session')
+
+      // Rafraîchir la liste pour avoir les vraies données
+      await fetchCompletions()
+    } catch (err) {
+      console.error('Error toggling session:', err)
+      // Annuler la mise à jour optimiste en cas d'erreur
+      await fetchCompletions()
+    } finally {
+      setTogglingSession(null)
     }
   }
 
@@ -432,10 +526,34 @@ export default function TrainingPage() {
                           bgcolor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid',
                           borderColor: 'rgba(255, 255, 255, 0.1)',
+                          opacity: isSessionCompleted(week.week, session.day, session.type) ? 0.7 : 1,
+                          position: 'relative',
                         }}
                       >
                         <CardContent>
-                          <Typography variant="h6" sx={{ mb: 1 }}>
+                          {/* Checkbox en haut à droite */}
+                          <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+                            <Checkbox
+                              checked={isSessionCompleted(week.week, session.day, session.type)}
+                              onChange={() => toggleSessionCompletion(week.week, session.day, session.type)}
+                              disabled={togglingSession === getSessionKey(week.week, session.day, session.type)}
+                              sx={{
+                                color: 'rgba(255, 255, 255, 0.3)',
+                                '&.Mui-checked': {
+                                  color: 'success.main',
+                                },
+                              }}
+                            />
+                          </Box>
+
+                          {/* Titre avec ligne barrée si complété */}
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              mb: 1,
+                              textDecoration: isSessionCompleted(week.week, session.day, session.type) ? 'line-through' : 'none',
+                            }}
+                          >
                             {session.type}
                           </Typography>
                           <Box sx={{ display: 'flex', gap: 2, mb: 1 }}>
