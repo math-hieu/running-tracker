@@ -10,19 +10,16 @@ import {
   CircularProgress,
   Container,
   Grid,
-  Stack,
   Typography,
 } from '@mui/material'
 import {
   CalendarMonth,
   DateRange,
   EmojiEvents,
-  Home,
   DirectionsRun as DirectionsRunIcon,
   CloudUpload,
   BarChart as BarChartIcon,
   Timer,
-  FitnessCenter,
 } from '@mui/icons-material'
 import {
   LineChart,
@@ -34,7 +31,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import Navigation from '@/components/Navigation'
 
 interface Activity {
   id: string
@@ -50,7 +47,6 @@ export default function HomePage() {
   const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const pathname = usePathname()
 
   useEffect(() => {
     fetchActivities()
@@ -319,69 +315,13 @@ export default function HomePage() {
         background: 'linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%)',
         py: 4,
         px: 2,
+        pb: { xs: 10, md: 4 }, // Extra padding on mobile for bottom navigation
       }}
     >
       <Container maxWidth="lg">
         {/* Navigation */}
         <Box sx={{ mb: 4 }}>
-          <Box sx={{
-            overflowX: 'auto',
-            mb: 3,
-            '&::-webkit-scrollbar': { display: 'none' },
-            msOverflowStyle: 'none',
-            scrollbarWidth: 'none',
-          }}>
-            <Stack direction="row" spacing={1} sx={{ minWidth: 'fit-content', pb: 1 }}>
-              <Chip
-                icon={<Home />}
-                label="Accueil"
-                component={Link}
-                href="/"
-                clickable
-                color={pathname === '/' ? 'primary' : 'default'}
-                sx={{
-                  fontWeight: pathname === '/' ? 600 : 400,
-                  fontSize: '0.95rem',
-                }}
-              />
-              <Chip
-                icon={<DirectionsRunIcon />}
-                label="Activités"
-                component={Link}
-                href="/activities"
-                clickable
-                color={pathname === '/activities' ? 'primary' : 'default'}
-                sx={{
-                  fontWeight: pathname === '/activities' ? 600 : 400,
-                  fontSize: '0.95rem',
-                }}
-              />
-              <Chip
-                icon={<FitnessCenter />}
-                label="Programme"
-                component={Link}
-                href="/training"
-                clickable
-                color={pathname === '/training' ? 'primary' : 'default'}
-                sx={{
-                  fontWeight: pathname === '/training' ? 600 : 400,
-                  fontSize: '0.95rem',
-                }}
-              />
-              <Chip
-                icon={<CloudUpload />}
-                label="Importer"
-                component={Link}
-                href="/strava"
-                clickable
-                color={pathname === '/strava' ? 'primary' : 'default'}
-                sx={{
-                  fontWeight: pathname === '/strava' ? 600 : 400,
-                  fontSize: '0.95rem',
-                }}
-              />
-            </Stack>
-          </Box>
+          <Navigation />
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box>

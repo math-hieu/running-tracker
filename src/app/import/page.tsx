@@ -257,30 +257,52 @@ function ImportContent() {
         background: 'linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%)',
         py: 4,
         px: 2,
+        pb: { xs: 10, md: 4 }, // Extra padding on mobile for bottom navigation
       }}
     >
       <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'space-between',
+          gap: 2,
+          mb: 4
+        }}>
           <Box>
-            <Typography variant="h2" gutterBottom>
+            <Typography variant="h2" gutterBottom sx={{ fontSize: { xs: '2rem', sm: '2.5rem' } }}>
               Importer vos activités
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Sélectionnez les activités que vous souhaitez importer
             </Typography>
           </Box>
-          <Button
-            component={Link}
-            href="/"
-            variant="outlined"
-            color="primary"
-          >
-            Retour à l&apos;accueil
-          </Button>
+          <Box sx={{ alignSelf: { xs: 'flex-start', sm: 'flex-start' } }}>
+            <Button
+              component={Link}
+              href="/"
+              variant="outlined"
+              color="primary"
+              fullWidth
+              sx={{ minWidth: { xs: '100%', sm: 'auto' } }}
+            >
+              Retour à l&apos;accueil
+            </Button>
+          </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-          <Stack direction="row" spacing={2} alignItems="center">
+        <Box sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          justifyContent: 'space-between',
+          gap: 2,
+          mb: 3
+        }}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            sx={{ width: { xs: '100%', md: 'auto' } }}
+          >
             <FormControlLabel
               control={
                 <Checkbox
@@ -293,14 +315,18 @@ function ImportContent() {
               }
               label="Tout sélectionner"
             />
-            <Chip
-              label={`${selectedActivities.size} sélectionnée(s)`}
-              color="primary"
-            />
-            <Chip
-              label={`${activities.filter((a) => a.isImported).length} déjà importée(s)`}
-              color="success"
-            />
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <Chip
+                label={`${selectedActivities.size} sélectionnée(s)`}
+                color="primary"
+                size="small"
+              />
+              <Chip
+                label={`${activities.filter((a) => a.isImported).length} déjà importée(s)`}
+                color="success"
+                size="small"
+              />
+            </Box>
           </Stack>
 
           <Button
@@ -309,7 +335,8 @@ function ImportContent() {
             disabled={selectedActivities.size === 0}
             onClick={handleImport}
             size="large"
-            sx={{ minWidth: 150 }}
+            fullWidth
+            sx={{ minWidth: { xs: '100%', md: 150 } }}
           >
             {importing ? (
               <CircularProgress size={24} color="inherit" />
@@ -330,43 +357,46 @@ function ImportContent() {
               }}
             >
               <CardContent>
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 }, alignItems: 'flex-start' }}>
                   <Checkbox
                     checked={selectedActivities.has(activity.id)}
                     onChange={() => handleSelectActivity(activity.id)}
                     disabled={activity.isImported}
+                    sx={{ mt: 0.5 }}
                   />
 
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                     <Box
                       sx={{
                         display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
                         justifyContent: 'space-between',
+                        gap: 1,
                         mb: 2,
                       }}
                     >
-                      <Box>
-                        <Typography variant="h5" gutterBottom>
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography variant="h5" gutterBottom sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem' } }}>
                           {activity.name}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                           {formatDate(activity.start_date)}
                         </Typography>
                       </Box>
                       {activity.isImported && (
-                        <Chip label="Importée" color="success" size="small" />
+                        <Chip label="Importée" color="success" size="small" sx={{ alignSelf: 'flex-start' }} />
                       )}
                     </Box>
 
-                    <Grid container spacing={3}>
+                    <Grid container spacing={{ xs: 2, sm: 3 }}>
                       <Grid item xs={6} sm={4} md={2}>
-                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                          <DirectionsRun color="primary" />
-                          <Box>
-                            <Typography variant="caption" color="text.secondary">
+                        <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, alignItems: 'center' }}>
+                          <DirectionsRun color="primary" sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                          <Box sx={{ minWidth: 0 }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                               Distance
                             </Typography>
-                            <Typography variant="body1" fontWeight={600}>
+                            <Typography variant="body1" fontWeight={600} sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                               {formatDistance(activity.distance)}
                             </Typography>
                           </Box>
@@ -374,13 +404,13 @@ function ImportContent() {
                       </Grid>
 
                       <Grid item xs={6} sm={4} md={2}>
-                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                          <Timer color="primary" />
-                          <Box>
-                            <Typography variant="caption" color="text.secondary">
+                        <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, alignItems: 'center' }}>
+                          <Timer color="primary" sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                          <Box sx={{ minWidth: 0 }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                               Durée
                             </Typography>
-                            <Typography variant="body1" fontWeight={600}>
+                            <Typography variant="body1" fontWeight={600} sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                               {formatDuration(activity.moving_time)}
                             </Typography>
                           </Box>
@@ -388,13 +418,13 @@ function ImportContent() {
                       </Grid>
 
                       <Grid item xs={6} sm={4} md={2}>
-                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                          <TrendingUp color="primary" />
-                          <Box>
-                            <Typography variant="caption" color="text.secondary">
+                        <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, alignItems: 'center' }}>
+                          <TrendingUp color="primary" sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                          <Box sx={{ minWidth: 0 }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                               Allure
                             </Typography>
-                            <Typography variant="body1" fontWeight={600}>
+                            <Typography variant="body1" fontWeight={600} sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                               {formatPace(activity.distance, activity.moving_time)}
                             </Typography>
                           </Box>
@@ -402,13 +432,13 @@ function ImportContent() {
                       </Grid>
 
                       <Grid item xs={6} sm={4} md={2}>
-                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                          <Terrain color="primary" />
-                          <Box>
-                            <Typography variant="caption" color="text.secondary">
+                        <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, alignItems: 'center' }}>
+                          <Terrain color="primary" sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                          <Box sx={{ minWidth: 0 }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                               Dénivelé
                             </Typography>
-                            <Typography variant="body1" fontWeight={600}>
+                            <Typography variant="body1" fontWeight={600} sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                               {Math.round(activity.total_elevation_gain)} m
                             </Typography>
                           </Box>
@@ -417,13 +447,13 @@ function ImportContent() {
 
                       {activity.average_heartrate && (
                         <Grid item xs={6} sm={4} md={2}>
-                          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                            <Favorite color="error" />
-                            <Box>
-                              <Typography variant="caption" color="text.secondary">
+                          <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, alignItems: 'center' }}>
+                            <Favorite color="error" sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                            <Box sx={{ minWidth: 0 }}>
+                              <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                                 FC moy.
                               </Typography>
-                              <Typography variant="body1" fontWeight={600}>
+                              <Typography variant="body1" fontWeight={600} sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                                 {Math.round(activity.average_heartrate)} bpm
                               </Typography>
                             </Box>
