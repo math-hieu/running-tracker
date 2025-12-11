@@ -280,6 +280,40 @@ export default function TrainingPage() {
     })
   }
 
+  const getWeekCompletionPercentage = (week: typeof program.weeks[0]): number | null => {
+    // Calculer le temps planifié total
+    const plannedMinutes = week.sessions.reduce((sum, session) =>
+      sum + session.duration_min, 0
+    )
+
+    // Si pas de temps planifié, retourner null
+    if (plannedMinutes === 0) return null
+
+    // Filtrer les activités de la semaine
+    const weekStart = new Date(week.start_date)
+    const weekEnd = new Date(week.end_date)
+    weekEnd.setHours(23, 59, 59, 999)
+
+    const weekActivities = activities.filter((activity) => {
+      const activityDate = new Date(activity.date)
+      return activityDate >= weekStart && activityDate <= weekEnd
+    })
+
+    // Calculer le temps réel (convertir secondes en minutes)
+    const actualMinutes = weekActivities.reduce((sum, activity) =>
+      sum + activity.duration / 60, 0
+    )
+
+    // Retourner le pourcentage (peut dépasser 100%)
+    return Math.round((actualMinutes / plannedMinutes) * 100)
+  }
+
+  const getCompletionChipColor = (percentage: number): 'error' | 'warning' | 'success' => {
+    if (percentage <= 30) return 'error'      // Rouge
+    if (percentage <= 70) return 'warning'    // Orange
+    return 'success'                          // Vert
+  }
+
   const formatYAxisTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60)
     const mins = Math.round(minutes % 60)
@@ -336,40 +370,40 @@ export default function TrainingPage() {
 
         {/* Program Meta Info */}
         <Card sx={{ mb: 4, background: 'linear-gradient(135deg, #2d1b1b 0%, #1e1e1e 100%)' }}>
-          <CardContent sx={{ p: 3 }}>
-            <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Typography variant="h5" sx={{ mb: { xs: 2, sm: 3 }, fontWeight: 600, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
               Informations générales
             </Typography>
 
-            <Grid container spacing={3} sx={{ mb: 3 }}>
+            <Grid container spacing={{ xs: 2, sm: 3 }} sx={{ mb: { xs: 2, sm: 3 } }}>
               <Grid item xs={12} md={6}>
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="caption" color="text.secondary">Durée du plan</Typography>
-                  <Typography variant="h6">{program.meta.weeks} semaines</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>Durée du plan</Typography>
+                  <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>{program.meta.weeks} semaines</Typography>
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="caption" color="text.secondary">Sessions par semaine</Typography>
-                  <Typography variant="h6">{program.meta.sessions_per_week}</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>Sessions par semaine</Typography>
+                  <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>{program.meta.sessions_per_week}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="caption" color="text.secondary">Volume de départ</Typography>
-                  <Typography variant="h6">{program.meta.starting_volume_km_per_week} km/semaine</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>Volume de départ</Typography>
+                  <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>{program.meta.starting_volume_km_per_week} km/semaine</Typography>
                 </Box>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="caption" color="text.secondary">Focus d&apos;intensité</Typography>
-                  <Typography variant="body2">{program.meta.intensity_focus}</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>Focus d&apos;intensité</Typography>
+                  <Typography variant="body2" sx={{ fontSize: { xs: '0.85rem', sm: '0.875rem' } }}>{program.meta.intensity_focus}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="caption" color="text.secondary">Renforcement recommandé</Typography>
-                  <Typography variant="body2">{program.meta.strength_reco}</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>Renforcement recommandé</Typography>
+                  <Typography variant="body2" sx={{ fontSize: { xs: '0.85rem', sm: '0.875rem' } }}>{program.meta.strength_reco}</Typography>
                 </Box>
               </Grid>
             </Grid>
 
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Zones d&apos;effort</Typography>
+            <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+              <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1rem', sm: '1.25rem' } }}>Zones d&apos;effort</Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                   <Box sx={{ p: 2, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: 1 }}>
@@ -412,6 +446,7 @@ export default function TrainingPage() {
           const status = getWeekStatus(week.start_date, week.end_date)
           const isCurrent = status === 'current'
           const isUpcoming = status === 'upcoming'
+          const isPast = status === 'completed'
 
           return (
             <Accordion
@@ -440,9 +475,16 @@ export default function TrainingPage() {
                 }}
               >
                 <Box sx={{ width: '100%' }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                  <Box sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    justifyContent: 'space-between',
+                    alignItems: { xs: 'flex-start', sm: 'center' },
+                    mb: 1,
+                    gap: { xs: 1.5, sm: 0 }
+                  }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 }, flexWrap: 'wrap' }}>
+                      <Typography variant="h5" sx={{ fontWeight: 600, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
                         Semaine {week.week}
                       </Typography>
                       {isCurrent && (
@@ -453,25 +495,42 @@ export default function TrainingPage() {
                           sx={{ fontWeight: 600 }}
                         />
                       )}
+                      {(isPast || isCurrent) && (() => {
+                        const completionPercentage = getWeekCompletionPercentage(week)
+
+                        if (completionPercentage === null) return null
+
+                        const chipColor = getCompletionChipColor(completionPercentage)
+
+                        return (
+                          <Chip
+                            label={`${completionPercentage}%`}
+                            color={chipColor}
+                            size="small"
+                            sx={{ fontWeight: 600 }}
+                          />
+                        )
+                      })()}
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 }, alignItems: 'center' }}>
                       <Chip
                         icon={<CalendarToday />}
                         label={formatDateRange(week.start_date, week.end_date)}
                         variant="outlined"
+                        size="small"
                       />
                     </Box>
                   </Box>
-                  <Box sx={{ display: 'flex', gap: 3 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      <TrendingUp sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
+                  <Box sx={{ display: 'flex', gap: { xs: 1.5, sm: 3 }, flexWrap: 'wrap' }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
+                      <TrendingUp sx={{ fontSize: { xs: 14, sm: 16 }, verticalAlign: 'middle', mr: 0.5 }} />
                       {week.target_km_range} km
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      <DirectionsRunIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
+                      <DirectionsRunIcon sx={{ fontSize: { xs: 14, sm: 16 }, verticalAlign: 'middle', mr: 0.5 }} />
                       {week.target_dplus_range_m} m D+
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                       {week.sessions.length} session{week.sessions.length > 1 ? 's' : ''}
                     </Typography>
                   </Box>
@@ -652,33 +711,33 @@ export default function TrainingPage() {
               </ResponsiveContainer>
             </Box>
 
-            <Grid container spacing={3} sx={{ mt: 2 }}>
+            <Grid container spacing={{ xs: 2, sm: 3 }} sx={{ mt: { xs: 1, sm: 2 } }}>
               <Grid item xs={12} md={4}>
-                <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'rgba(206, 147, 216, 0.1)', borderRadius: 2 }}>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                <Box sx={{ textAlign: 'center', p: { xs: 1.5, sm: 2 }, bgcolor: 'rgba(206, 147, 216, 0.1)', borderRadius: 2 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                     Volume prévu total
                   </Typography>
-                  <Typography variant="h5" sx={{ color: '#ce93d8', fontWeight: 600 }}>
+                  <Typography variant="h5" sx={{ color: '#ce93d8', fontWeight: 600, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
                     {formatYAxisTime(Math.round(weeklyChartData.reduce((sum, d) => sum + d.plannedMinutes, 0)))}
                   </Typography>
                 </Box>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: 2 }}>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                <Box sx={{ textAlign: 'center', p: { xs: 1.5, sm: 2 }, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: 2 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                     Volume réalisé total
                   </Typography>
-                  <Typography variant="h5" sx={{ color: '#4caf50', fontWeight: 600 }}>
+                  <Typography variant="h5" sx={{ color: '#4caf50', fontWeight: 600, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
                     {formatYAxisTime(Math.round(weeklyChartData.reduce((sum, d) => sum + d.actualMinutes, 0)))}
                   </Typography>
                 </Box>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'rgba(255, 255, 255, 0.05)', borderRadius: 2 }}>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                <Box sx={{ textAlign: 'center', p: { xs: 1.5, sm: 2 }, bgcolor: 'rgba(255, 255, 255, 0.05)', borderRadius: 2 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                     Taux de réalisation
                   </Typography>
-                  <Typography variant="h5" sx={{ color: '#fff', fontWeight: 600 }}>
+                  <Typography variant="h5" sx={{ color: '#fff', fontWeight: 600, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
                     {(() => {
                       const totalPlanned = weeklyChartData.reduce((sum, d) => sum + d.plannedMinutes, 0)
                       const totalActual = weeklyChartData.reduce((sum, d) => sum + d.actualMinutes, 0)
