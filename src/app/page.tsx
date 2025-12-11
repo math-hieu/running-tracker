@@ -20,6 +20,7 @@ import {
   CloudUpload,
   BarChart as BarChartIcon,
   Timer,
+  Terrain,
 } from '@mui/icons-material'
 import {
   LineChart,
@@ -265,6 +266,35 @@ export default function HomePage() {
     }))
   }
 
+  const calculateWeeklyElevation = () => {
+    const now = new Date()
+    const weeks: { [key: string]: number } = {}
+
+    // Générer les 12 dernières semaines (du lundi au dimanche)
+    for (let i = 11; i >= 0; i--) {
+      const weekStart = getMonday(now)
+      weekStart.setDate(weekStart.getDate() - (i * 7))
+      const weekKey = `${weekStart.getDate().toString().padStart(2, '0')}/${(weekStart.getMonth() + 1).toString().padStart(2, '0')}`
+      weeks[weekKey] = 0
+    }
+
+    // Ajouter le dénivelé des activités (en mètres)
+    activities.forEach((activity) => {
+      const activityDate = new Date(activity.date)
+      const weekStart = getMonday(activityDate)
+      const weekKey = `${weekStart.getDate().toString().padStart(2, '0')}/${(weekStart.getMonth() + 1).toString().padStart(2, '0')}`
+
+      if (weeks.hasOwnProperty(weekKey)) {
+        weeks[weekKey] += activity.elevation || 0
+      }
+    })
+
+    return Object.entries(weeks).map(([week, elevation]) => ({
+      week,
+      elevation: parseFloat(elevation.toFixed(0)),
+    }))
+  }
+
   if (loading) {
     return (
       <Box
@@ -307,6 +337,7 @@ export default function HomePage() {
   const totalStats = calculateTotalStats()
   const weeklyData = calculateWeeklyDistance()
   const weeklyDurationData = calculateWeeklyDuration()
+  const weeklyElevationData = calculateWeeklyElevation()
 
   return (
     <Box
@@ -601,6 +632,55 @@ export default function HomePage() {
                       stroke="#ce93d8"
                       strokeWidth={3}
                       dot={{ fill: '#ce93d8', r: 5 }}
+                      activeDot={{ r: 7 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Box>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Weekly Elevation Chart */}
+        {activities.length > 0 && (
+          <Card sx={{ mb: 4 }}>
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+                <Terrain sx={{ fontSize: 32, color: 'success.main' }} />
+                <Typography variant="h4" sx={{ fontWeight: 600 }}>
+                  Dénivelé par semaine
+                </Typography>
+              </Box>
+
+              <Box sx={{ width: '100%', height: 300 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={weeklyElevationData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                    <XAxis
+                      dataKey="week"
+                      stroke="#999"
+                      style={{ fontSize: '0.875rem' }}
+                    />
+                    <YAxis
+                      stroke="#999"
+                      style={{ fontSize: '0.875rem' }}
+                      label={{ value: 'mètres', angle: -90, position: 'insideLeft', fill: '#999' }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1e1e1e',
+                        border: '1px solid #333',
+                        borderRadius: '8px'
+                      }}
+                      labelStyle={{ color: '#fff' }}
+                      formatter={(value: number) => [`${value} m`, 'Dénivelé']}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="elevation"
+                      stroke="#4caf50"
+                      strokeWidth={3}
+                      dot={{ fill: '#4caf50', r: 5 }}
                       activeDot={{ r: 7 }}
                     />
                   </LineChart>

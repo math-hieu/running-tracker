@@ -103,12 +103,14 @@ export default function Navigation() {
               },
             },
             '& .MuiBottomNavigationAction-label': {
-              fontSize: '0.75rem',
-              color: '#ffffff',
+                fontSize: '0.75rem',
+                color: '#ffffff',
+                opacity: '1'
             },
             '& .Mui-selected .MuiBottomNavigationAction-label': {
-              fontSize: '0.75rem',
-              color: '#ff6b35',
+                fontSize: '0.75rem',
+                color: '#ff6b35',
+                opacity: '1'
             },
           }}
         >

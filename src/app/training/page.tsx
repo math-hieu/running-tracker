@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react'
 import {
   Box,
+  Button,
   Card,
   CardContent,
-  Checkbox,
   Chip,
   Container,
   Grid,
@@ -14,6 +14,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Alert,
+  CircularProgress,
 } from '@mui/material'
 import {
   DirectionsRun as DirectionsRunIcon,
@@ -23,6 +24,8 @@ import {
   TrendingUp,
   EmojiEvents,
   ShowChart,
+  CheckCircle,
+  Cancel,
 } from '@mui/icons-material'
 import Navigation from '@/components/Navigation'
 import {
@@ -135,6 +138,24 @@ export default function TrainingPage() {
            c.dayOfWeek === (dayOfWeek || null) &&
            c.sessionType === sessionType
     )
+  }
+
+  const getSessionCompletionDate = (weekNumber: number, dayOfWeek: string | undefined, sessionType: string): string | null => {
+    const completion = completions.find(
+      c => c.weekNumber === weekNumber &&
+           c.dayOfWeek === (dayOfWeek || null) &&
+           c.sessionType === sessionType
+    )
+    return completion ? completion.completedAt : null
+  }
+
+  const formatCompletionDate = (dateString: string): string => {
+    const date = new Date(dateString)
+    return new Intl.DateTimeFormat('fr-FR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    }).format(date)
   }
 
   const getSessionKey = (weekNumber: number, dayOfWeek: string | undefined, sessionType: string): string => {
@@ -469,33 +490,19 @@ export default function TrainingPage() {
                           position: 'relative',
                         }}
                       >
-                        <CardContent>
-                          {/* Checkbox en haut à droite */}
-                          <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-                            <Checkbox
-                              checked={isSessionCompleted(week.week, session.day, session.type)}
-                              onChange={() => toggleSessionCompletion(week.week, session.day, session.type)}
-                              disabled={togglingSession === getSessionKey(week.week, session.day, session.type)}
-                              sx={{
-                                color: 'rgba(255, 255, 255, 0.3)',
-                                '&.Mui-checked': {
-                                  color: 'success.main',
-                                },
-                              }}
-                            />
-                          </Box>
-
+                        <CardContent sx={{ pb: { xs: 2, sm: 3 } }}>
                           {/* Titre avec ligne barrée si complété */}
                           <Typography
                             variant="h6"
                             sx={{
                               mb: 1,
                               textDecoration: isSessionCompleted(week.week, session.day, session.type) ? 'line-through' : 'none',
+                              pr: { xs: 0, sm: 2 },
                             }}
                           >
                             {session.type}
                           </Typography>
-                          <Box sx={{ display: 'flex', gap: 2, mb: 1 }}>
+                          <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
                             <Chip
                               label={formatDuration(session.duration_min)}
                               size="small"
@@ -510,10 +517,57 @@ export default function TrainingPage() {
                             )}
                           </Box>
                           {session.notes && (
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                               {session.notes}
                             </Typography>
                           )}
+
+                          {/* Date de validation si complété */}
+                          {isSessionCompleted(week.week, session.day, session.type) &&
+                           getSessionCompletionDate(week.week, session.day, session.type) && (
+                            <Typography
+                              variant="caption"
+                              color="success.main"
+                              sx={{
+                                display: 'block',
+                                mb: 2,
+                                fontWeight: 500,
+                                fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                              }}
+                            >
+                              Validé le {formatCompletionDate(getSessionCompletionDate(week.week, session.day, session.type)!)}
+                            </Typography>
+                          )}
+
+                          {/* Bouton CTA */}
+                          <Button
+                            variant={isSessionCompleted(week.week, session.day, session.type) ? 'outlined' : 'contained'}
+                            color={isSessionCompleted(week.week, session.day, session.type) ? 'error' : 'success'}
+                            size="small"
+                            fullWidth
+                            onClick={() => toggleSessionCompletion(week.week, session.day, session.type)}
+                            disabled={togglingSession === getSessionKey(week.week, session.day, session.type)}
+                            startIcon={
+                              togglingSession === getSessionKey(week.week, session.day, session.type) ? (
+                                <CircularProgress size={16} color="inherit" />
+                              ) : isSessionCompleted(week.week, session.day, session.type) ? (
+                                <Cancel />
+                              ) : (
+                                <CheckCircle />
+                              )
+                            }
+                            sx={{
+                              textTransform: 'none',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                            }}
+                          >
+                            {togglingSession === getSessionKey(week.week, session.day, session.type)
+                              ? 'Chargement...'
+                              : isSessionCompleted(week.week, session.day, session.type)
+                              ? 'Annuler la validation'
+                              : 'Marquer comme complété'}
+                          </Button>
                         </CardContent>
                       </Card>
                     </Grid>
