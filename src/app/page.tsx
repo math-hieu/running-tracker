@@ -349,29 +349,18 @@ export default function HomePage() {
         pb: { xs: 10, md: 4 }, // Extra padding on mobile for bottom navigation
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         {/* Navigation */}
         <Box sx={{ mb: 4 }}>
           <Navigation />
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box>
-              <Typography variant="h2" gutterBottom>
-                Running Tracker
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                Suivez vos performances de course à pied
-              </Typography>
-            </Box>
-            <Button
-              component={Link}
-              href="/strava"
-              variant="contained"
-              color="primary"
-              startIcon={<CloudUpload />}
-            >
-              Importer
-            </Button>
+          <Box>
+            <Typography variant="h2" gutterBottom>
+              Running Tracker
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Suivez vos performances de course à pied
+            </Typography>
           </Box>
         </Box>
 
@@ -562,7 +551,6 @@ export default function HomePage() {
                     <YAxis
                       stroke="#999"
                       style={{ fontSize: '0.875rem' }}
-                      label={{ value: 'km', angle: -90, position: 'insideLeft', fill: '#999' }}
                     />
                     <Tooltip
                       contentStyle={{
@@ -611,7 +599,6 @@ export default function HomePage() {
                     <YAxis
                       stroke="#999"
                       style={{ fontSize: '0.875rem' }}
-                      label={{ value: 'heures', angle: -90, position: 'insideLeft', fill: '#999' }}
                     />
                     <Tooltip
                       contentStyle={{
@@ -664,7 +651,6 @@ export default function HomePage() {
                     <YAxis
                       stroke="#999"
                       style={{ fontSize: '0.875rem' }}
-                      label={{ value: 'mètres', angle: -90, position: 'insideLeft', fill: '#999' }}
                     />
                     <Tooltip
                       contentStyle={{
