@@ -32,7 +32,9 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import Link from 'next/link'
+import Image from 'next/image'
 import Navigation from '@/components/Navigation'
+import logo from '../../assets/img/running-tracker-logo-app.png'
 
 interface Activity {
   id: string
@@ -350,22 +352,27 @@ export default function HomePage() {
       }}
     >
       <Container maxWidth="xl">
-        {/* Navigation */}
-        <Box sx={{ mb: 4 }}>
-          <Navigation />
-
-          <Box>
-            <Typography variant="h2" gutterBottom>
-              Running Tracker
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Suivez vos performances de course à pied
-            </Typography>
+        {/* Logo and Navigation */}
+        <Box sx={{ mb: 2 }}>
+          <Box sx={{
+            display: 'flex',
+            justifyContent: { xs: 'center', md: 'flex-start' },
+            mb: 1
+          }}>
+            <Image
+              src={logo}
+              alt="Running Tracker"
+              width={250}
+              height={60}
+              style={{ objectFit: 'contain' }}
+            />
           </Box>
+
+          <Navigation />
         </Box>
 
         {/* Monthly Stats Widget */}
-        <Card sx={{ mb: 4, background: 'linear-gradient(135deg, #2d1b1b 0%, #1e1e1e 100%)' }}>
+        <Card sx={{ mb: 4, mt: 2, background: 'linear-gradient(135deg, #2d1b1b 0%, #1e1e1e 100%)' }}>
           <CardContent sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
               <CalendarMonth sx={{ fontSize: 32, color: 'primary.main' }} />
