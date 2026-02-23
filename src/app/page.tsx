@@ -25,6 +25,8 @@ import {
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -268,6 +270,28 @@ export default function HomePage() {
     }))
   }
 
+  const calculateMonthlyDistance = () => {
+    const now = new Date()
+    const months: { month: string; distance: number }[] = []
+
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      const key = d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' })
+      months.push({ month: key, distance: 0 })
+    }
+
+    activities.forEach((activity) => {
+      const activityDate = new Date(activity.date)
+      const key = activityDate.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' })
+      const entry = months.find((m) => m.month === key)
+      if (entry) {
+        entry.distance = parseFloat((entry.distance + activity.distance).toFixed(1))
+      }
+    })
+
+    return months
+  }
+
   const calculateWeeklyElevation = () => {
     const now = new Date()
     const weeks: { [key: string]: number } = {}
@@ -340,6 +364,7 @@ export default function HomePage() {
   const weeklyData = calculateWeeklyDistance()
   const weeklyDurationData = calculateWeeklyDuration()
   const weeklyElevationData = calculateWeeklyElevation()
+  const monthlyDistanceData = calculateMonthlyDistance()
 
   return (
     <Box
@@ -677,6 +702,52 @@ export default function HomePage() {
                       activeDot={{ r: 7 }}
                     />
                   </LineChart>
+                </ResponsiveContainer>
+              </Box>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Monthly Distance Bar Chart */}
+        {activities.length > 0 && (
+          <Card sx={{ mb: 4 }}>
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+                <BarChartIcon sx={{ fontSize: 32, color: 'primary.main' }} />
+                <Typography variant="h4" sx={{ fontWeight: 600 }}>
+                  Volume km par mois
+                </Typography>
+              </Box>
+
+              <Box sx={{ width: '100%', height: 300 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={monthlyDistanceData} barCategoryGap="20%">
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                    <XAxis
+                      dataKey="month"
+                      stroke="#999"
+                      style={{ fontSize: '0.75rem' }}
+                    />
+                    <YAxis
+                      stroke="#999"
+                      style={{ fontSize: '0.875rem' }}
+                      tickFormatter={(v: number) => `${v} km`}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1e1e1e',
+                        border: '1px solid #333',
+                        borderRadius: '8px',
+                      }}
+                      labelStyle={{ color: '#fff' }}
+                      formatter={(value: number) => [`${value} km`, 'Distance']}
+                    />
+                    <Bar
+                      dataKey="distance"
+                      fill="#ff6b35"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
                 </ResponsiveContainer>
               </Box>
             </CardContent>
