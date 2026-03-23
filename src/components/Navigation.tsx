@@ -5,7 +5,6 @@ import {
   Home,
   DirectionsRun as DirectionsRunIcon,
   CloudUpload,
-  FitnessCenter,
 } from '@mui/icons-material'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -48,18 +47,6 @@ export default function Navigation() {
             color={pathname === '/activities' ? 'primary' : 'default'}
             sx={{
               fontWeight: pathname === '/activities' ? 600 : 400,
-              fontSize: '0.95rem',
-            }}
-          />
-          <Chip
-            icon={<FitnessCenter />}
-            label="Programme"
-            component={Link}
-            href="/training"
-            clickable
-            color={pathname === '/training' ? 'primary' : 'default'}
-            sx={{
-              fontWeight: pathname === '/training' ? 600 : 400,
               fontSize: '0.95rem',
             }}
           />
@@ -127,13 +114,6 @@ export default function Navigation() {
             icon={<DirectionsRunIcon />}
             component={Link}
             href="/activities"
-          />
-          <BottomNavigationAction
-            label="Programme"
-            value="/training"
-            icon={<FitnessCenter />}
-            component={Link}
-            href="/training"
           />
           <BottomNavigationAction
             label="Importer"

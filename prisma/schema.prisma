@@ -47,33 +47,6 @@ model User {
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
   activities          Activity[]
-  sessionCompletions  SessionCompletion[]
 
   @@map("users")
-}
-
-model SessionCompletion {
-  id            String   @id @default(cuid())
-  userId        String
-
-  // Identification de la session (correspond au JSON)
-  weekNumber    Int
-  dayOfWeek     String?  // "Tue", "Thu", "Sun", etc. (nullable pour sessions sans jour spécifique)
-  sessionType   String   // "Footing EF", "Sortie longue trail EF", etc.
-
-  // Date de complétion
-  completedAt   DateTime @default(now())
-
-  // Metadata
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  // Relations
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Index et contraintes
-  @@unique([userId, weekNumber, dayOfWeek, sessionType])
-  @@index([userId])
-  @@index([userId, weekNumber])
-  @@map("session_completions")
 }
