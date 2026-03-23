@@ -19,6 +19,33 @@ export async function GET() {
   }
 }
 
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { id, isRace } = body
+
+    if (!id || typeof isRace !== 'boolean') {
+      return NextResponse.json(
+        { error: 'Missing required fields: id, isRace' },
+        { status: 400 }
+      )
+    }
+
+    const activity = await prisma.activity.update({
+      where: { id },
+      data: { isRace },
+    })
+
+    return NextResponse.json(activity)
+  } catch (error) {
+    console.error('Error updating activity:', error)
+    return NextResponse.json(
+      { error: 'Failed to update activity' },
+      { status: 500 }
+    )
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()

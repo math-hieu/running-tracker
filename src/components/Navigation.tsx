@@ -5,6 +5,7 @@ import {
   Home,
   DirectionsRun as DirectionsRunIcon,
   CloudUpload,
+  EmojiEvents,
 } from '@mui/icons-material'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -47,6 +48,18 @@ export default function Navigation() {
             color={pathname === '/activities' ? 'primary' : 'default'}
             sx={{
               fontWeight: pathname === '/activities' ? 600 : 400,
+              fontSize: '0.95rem',
+            }}
+          />
+          <Chip
+            icon={<EmojiEvents />}
+            label="Courses"
+            component={Link}
+            href="/courses"
+            clickable
+            color={pathname === '/courses' ? 'primary' : 'default'}
+            sx={{
+              fontWeight: pathname === '/courses' ? 600 : 400,
               fontSize: '0.95rem',
             }}
           />
@@ -114,6 +127,13 @@ export default function Navigation() {
             icon={<DirectionsRunIcon />}
             component={Link}
             href="/activities"
+          />
+          <BottomNavigationAction
+            label="Courses"
+            value="/courses"
+            icon={<EmojiEvents />}
+            component={Link}
+            href="/courses"
           />
           <BottomNavigationAction
             label="Importer"

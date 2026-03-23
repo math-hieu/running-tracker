@@ -10,15 +10,18 @@ import {
   Container,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
   MenuItem,
   Pagination,
   Select,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import {
   DirectionsRun,
+  EmojiEvents,
   Timer,
   TrendingUp,
   Terrain,
@@ -41,6 +44,7 @@ interface Activity {
   heartRate?: number
   calories?: number
   stravaId?: string
+  isRace?: boolean
 }
 
 export default function ActivitiesPage() {
@@ -142,6 +146,27 @@ export default function ActivitiesPage() {
   const handleSortChange = (newSortBy: string) => {
     setSortBy(newSortBy)
     setCurrentPage(1) // Reset to first page when sorting changes
+  }
+
+  const toggleRace = async (activity: Activity) => {
+    const newIsRace = !activity.isRace
+    // Optimistic update
+    setActivities((prev) =>
+      prev.map((a) => (a.id === activity.id ? { ...a, isRace: newIsRace } : a))
+    )
+    try {
+      const response = await fetch('/api/activities', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: activity.id, isRace: newIsRace }),
+      })
+      if (!response.ok) throw new Error('Failed to update')
+    } catch {
+      // Revert on error
+      setActivities((prev) =>
+        prev.map((a) => (a.id === activity.id ? { ...a, isRace: activity.isRace } : a))
+      )
+    }
   }
 
   if (loading) {
@@ -250,6 +275,14 @@ export default function ActivitiesPage() {
                   <Box>
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 1 }}>
                       <Typography variant="h5">{activity.title}</Typography>
+                      {activity.isRace && (
+                        <Chip
+                          label="Course"
+                          size="small"
+                          icon={<EmojiEvents />}
+                          sx={{ backgroundColor: '#ff6b35', color: '#fff', fontWeight: 600 }}
+                        />
+                      )}
                       {activity.stravaId && (
                         <Chip
                           label="Strava"
@@ -277,6 +310,15 @@ export default function ActivitiesPage() {
                       </Typography>
                     )}
                   </Box>
+                  <Tooltip title={activity.isRace ? 'Retirer le tag Course' : 'Marquer comme Course'}>
+                    <IconButton
+                      onClick={() => toggleRace(activity)}
+                      size="small"
+                      sx={{ color: activity.isRace ? '#ff6b35' : 'text.disabled', alignSelf: 'flex-start' }}
+                    >
+                      <EmojiEvents />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
 
                 <Grid container spacing={2}>
